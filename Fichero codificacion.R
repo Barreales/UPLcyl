@@ -23,50 +23,50 @@ data <- read.csv("3352.csv", sep = ";", header = TRUE, fill = TRUE, check.names 
 
 # Limpiamos de datos perdidos
 
-# P5_1 - Fuentes utilizadas para informarse, valores perdidos: 98, 99
+# P5_1 Fuente de información
 data$P5_1 <- na_if(data$P5_1, 98)
 data$P5_1 <- na_if(data$P5_1, 99)
 data$P5_1 <- as.factor(data$P5_1)
 
-# EDAD - Edad de la persona entrevistada, valor perdido: 99
+# EDAD 
 data$EDAD <- na_if(data$EDAD, 99)
 data$EDAD <- as.numeric(as.character(data$EDAD))
 
-# CNO11 - Ocupación de la persona entrevistada, valor perdido: 99
+# CNO11 ocupacion
 data$CNO11 <- na_if(data$CNO11, 99)
 data$CNO11 <- as.factor(data$CNO11)
 
-# ESTUDIOS - Nivel de estudios alcanzado, valor perdido: 9
+# ESTUDIOS 
 data$ESTUDIOS <- na_if(data$ESTUDIOS, 9)
 data$ESTUDIOS <- as.factor(data$ESTUDIOS)
 
-# ESTADOCIVIL - Estado civil de la persona entrevistada, valor perdido: 9
+# ESTADOCIVIL 
 data$ESTADOCIVIL <- na_if(data$ESTADOCIVIL, 9)
 data$ESTADOCIVIL <- as.factor(data$ESTADOCIVIL)
 
-# SEXO - Sexo de la persona entrevistada, no tiene código para valores perdidos directo
+# SEXO 
 data$SEXO <- as.factor(data$SEXO)
 
-# ESCIDEOL - Escala de autoubicación ideológica, valores perdidos: 98, 99
+# ESCIDEOL escala de ideología
 data$ESCIDEOL <- na_if(data$ESCIDEOL, 98)
 data$ESCIDEOL <- na_if(data$ESCIDEOL, 99)
 data$ESCIDEOL <- as.numeric(as.character(data$ESCIDEOL))
 
-# TAMUNI - Tamaño de municipio, valor perdido: 0
+# TAMUNI Tamaño de municipio
 data$TAMUNI <- na_if(data$TAMUNI, 0)
 data$TAMUNI <- as.factor(data$TAMUNI)
 
-# FIDELID - Fidelidad de voto en elecciones, valores perdidos: 8, 9
+# FIDELID Fidelidad de voto 
 data$FIDELID <- na_if(data$FIDELID, 8)
 data$FIDELID <- na_if(data$FIDELID, 9)
 data$FIDELID <- as.factor(data$FIDELID)
 
-# CLASESUB - Clase social subjetiva, valores perdidos: 8, 9
+# CLASESUB Clase social subjetiva
 data$CLASESUB <- na_if(data$CLASESUB, 8)
 data$CLASESUB <- na_if(data$CLASESUB, 9)
 data$CLASESUB <- as.factor(data$CLASESUB)
 
-# Valores perdidos para P13A: 98 (No recuerda), 99 (No contesta)
+# RECUVOTOA partido votado
 data$RECUVOTOA <- na_if(data$RECUVOTOA, 98)
 data$RECUVOTOA <- na_if(data$RECUVOTOA, 99)
 data$RECUVOTOA <- as.factor(data$RECUVOTOA)
@@ -83,20 +83,20 @@ datos <- data
 
 # Recodificamos las variables para ponerles sus categorías
 
-# Recodificar RECUVOTOA
+# RECUVOTOA
 datos$RECUVOTOA <- factor(datos$RECUVOTOA, levels = c(1, 2, 4, 17, 18, 21, 44, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 91, 92, 26, 39, 95, 96, 77, 98, 99),
                           labels = c("PP", "PSOE", "Ciudadanos", "PACMA", "VOX", "Unidas Podemos", "UPL", "Por Ávila", "Soria Ya", "Vía Burgalesa", "Puede Palencia",
                                      "Centrados (Segovia)", "Zamora Decide", "España Vaciada", "PCAS-TC-RC", "PREPAL", "Coalición por El Bierzo", "Por Zamora",
                                      "URCL (Unidad Regionalista de Castilla y León)", "Falange Española de las JONS", "PCPE", "Otro partido", "En blanco", "Voto nulo",
                                      "No recuerda", "No contesta"))
 
-# Recodificar P5_1
+# P5_1
 datos$P5_1 <- factor(datos$P5_1, levels = c(1, 2, 3, 4, 5, 6, 7, 95, 97, 98, 99),
                      labels = c("Prensa, en formato impreso", "Prensa, en formato digital", "Televisión", "Radio", "Redes sociales", 
                                 "Contactos personales, reuniones, mítines, etc.", "(NO LEER) Otros medios", "(NO LEER) Ningún medio más", 
                                 "(NO LEER) No se informó, no le interesa la política", "N.S.", "N.C."))
 
-# Recodificar CNO11
+# CNO11
 datos$CNO11 <- factor(datos$CNO11, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 99),
                       labels = c("Directores/as y gerentes", "Profesionales, científicos/as e intelectuales", "Técnicos/as y profesionales de nivel medio",
                                  "Personal de apoyo administrativo", "Trabajadores/as de los servicios y vendedores/as de comercios y mercados",
@@ -104,31 +104,31 @@ datos$CNO11 <- factor(datos$CNO11, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
                                  "Operadores/as de instalaciones y máquinas y ensambladores/as", "Ocupaciones elementales", "Ocupaciones militares y cuerpos policiales",
                                  "Otra/o", "No contesta"))
 
-# Recodificar ESTUDIOS
+# ESTUDIOS
 datos$ESTUDIOS <- factor(datos$ESTUDIOS, levels = c(1, 2, 3, 4, 5, 6, 7, 9),
                          labels = c("Sin estudios", "Primaria", "Secundaria 1ª etapa", "Secundaria 2ª etapa", "F.P.", "Superiores", "Otros", "N.C."))
 
-# Recodificar ESTADOCIVIL
+# ESTADOCIVIL
 datos$ESTADOCIVIL <- factor(datos$ESTADOCIVIL, levels = c(1, 2, 3, 4, 5, 9),
                             labels = c("Casado/a", "Soltero/a", "Viudo/a", "Separado/a", "Divorciado/a", "N.C."))
 
-# Recodificar SEXO
+# SEXO
 datos$SEXO <- factor(datos$SEXO, levels = c(1, 2),
                      labels = c("Hombre", "Mujer"))
 
-# Recodificar TAMUNI
+# TAMUNI
 datos$TAMUNI <- factor(datos$TAMUNI, levels = c(1, 2, 3, 4, 5, 6, 7),
                        labels = c("Menos o igual a 2.000 habitantes", "2.001 a 10.000 habitantes", "10.001 a 50.000 habitantes",
                                   "50.001 a 100.000 habitantes", "100.001 a 400.000 habitantes", "400.001 a 1.000.000 habitantes",
                                   "Más de 1.000.000 habitantes"))
 
-# Recodificar FIDELID
+# FIDELID
 datos$FIDELID <- factor(datos$FIDELID, levels = c(1, 2, 3, 4, 5, 6, 8, 9),
                         labels = c("Votan siempre por el mismo partido", "Por lo general suelen votar por el mismo partido",
                                    "Según lo que más les convenza en ese momento, votan por un partido u otro o no votan", "(NO LEER) Votan en blanco o nulo",
                                    "(NO LEER) No suelen votar", "(NO LEER) Es la primera vez que votan", "No recuerda/N.S.", "N.C."))
 
-# Recodificar CLASESUB
+# CLASESUB
 datos$CLASESUB <- factor(datos$CLASESUB, levels = c(1, 2, 3, 4, 5, 6, 8, 9),
                          labels = c("Clase alta y media alta", "Clase media-media", "Clase media-baja", "Clase trabajadora/obrera/proletariado",
                                     "Clase baja/pobre", "Otras", "N.S.", "N.C."))
@@ -157,15 +157,16 @@ datos$Voto_PSOE <- ifelse(datos$RECUVOTOA == "PSOE", 1, 0)
 
 
 # Regresiones
-# Ajustar modelo de regresión logística para Unidas Podemos
+
+# Unidas Podemos
 modelo_up <- glm(Voto_UP ~ P5_1 + EDAD + CNO11 + ESTUDIOS + ESTADOCIVIL + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
                  data = datos, family = binomial)
 
-# Ajustar modelo de regresión logística para UPL
+# UPL
 modelo_upl <- glm(Voto_UPL ~ P5_1 + EDAD + CNO11 + ESTUDIOS + ESTADOCIVIL + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
                   data = datos, family = binomial)
 
-# Ajustar modelo de regresión logística para PSOE
+# PSOE
 modelo_psoe <- glm(Voto_PSOE ~ P5_1 + EDAD + CNO11 + ESTUDIOS + ESTADOCIVIL + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
                    data = datos, family = binomial)
 
