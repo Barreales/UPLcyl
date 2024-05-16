@@ -1,0 +1,29 @@
+---
+title: "Regresiones"
+output: word_document
+date: "2024-05-16"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r cars}
+summary(modelo_upl2)
+```
+
+```{r cars}
+summary(modelo_up2)
+```
+
+```{r cars}
+summary(modelo_psoe2)
+```
+
+```{r cars}
+summary(modelo_upl_up2)
+```
+
+```{r cars}
+summary(modelo_upl_psoe2)
+```

@@ -2,7 +2,6 @@
 
 # Diego Mochales, David Barreales, Emilio Portela, Nayeli Paucart
 
-
 # Librerias
 library(tidyverse)
 library(tidyr)
@@ -17,7 +16,7 @@ library(writexl)
 
 
 # Fichero 
-data <- read.csv("3352.csv", sep = ";", header = TRUE, fill = TRUE, check.names = TRUE)
+data <- read.csv("Data/3352.csv", sep = ";", header = TRUE, fill = TRUE, check.names = TRUE)
 
 
 
@@ -62,6 +61,7 @@ data$FIDELID <- na_if(data$FIDELID, 9)
 data$FIDELID <- as.factor(data$FIDELID)
 
 # CLASESUB Clase social subjetiva
+data$CLASESUB <- na_if(data$CLASESUB, 6)
 data$CLASESUB <- na_if(data$CLASESUB, 8)
 data$CLASESUB <- na_if(data$CLASESUB, 9)
 data$CLASESUB <- as.factor(data$CLASESUB)
@@ -135,6 +135,9 @@ datos$CLASESUB <- factor(datos$CLASESUB, levels = c(1, 2, 3, 4, 5, 6, 8, 9),
 
 
 
+
+
+
 # Convertir variables categóricas a factores 
 datos$P5_1 <- as.factor(datos$P5_1)
 datos$CNO11 <- as.factor(datos$CNO11)
@@ -154,7 +157,8 @@ datos$Voto_UP <- ifelse(datos$RECUVOTOA == "Unidas Podemos", 1, 0)
 datos$Voto_UPL <- ifelse(datos$RECUVOTOA == "UPL", 1, 0)
 datos$Voto_PSOE <- ifelse(datos$RECUVOTOA == "PSOE", 1, 0)
 
-
+datos$UPL_UP <- ifelse(datos$RECUVOTOA == "UPL", 1, ifelse(datos$RECUVOTOA == "Unidas Podemos", 0, NA))
+datos$UPL_PSOE <- ifelse(datos$RECUVOTOA == "UPL", 1, ifelse(datos$RECUVOTOA == "PSOE", 0, NA))
 
 # Regresiones
 
@@ -170,12 +174,44 @@ modelo_upl <- glm(Voto_UPL ~ P5_1 + EDAD + CNO11 + ESTUDIOS + ESTADOCIVIL + SEXO
 modelo_psoe <- glm(Voto_PSOE ~ P5_1 + EDAD + CNO11 + ESTUDIOS + ESTADOCIVIL + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
                    data = datos, family = binomial)
 
+#UPL vs UP
+modelo_upl_up <- glm(UPL_UP ~ P5_1 + EDAD + CNO11 + ESTUDIOS + ESTADOCIVIL + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
+                     data = datos, family = binomial)
+
+#UPL vs PSOE
+modelo_upl_psoe <- glm(UPL_PSOE ~ P5_1 + EDAD + CNO11 + ESTUDIOS + ESTADOCIVIL + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
+                     data = datos, family = binomial)
+
+
 # Resultados
 summary(modelo_up)
 summary(modelo_upl)
 summary(modelo_psoe)
+summary(modelo_upl_up)
+summary(modelo_upl_psoe)
 
+#Regresiones limpias
+modelo_upl2 <- glm(Voto_UPL ~ P5_1 + EDAD + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
+                     data = datos, family = binomial)
 
+modelo_up2 <- glm(Voto_UP ~ P5_1 + EDAD + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
+                   data = datos, family = binomial)
+
+modelo_psoe2 <- glm(Voto_PSOE ~ P5_1 + EDAD + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
+                    data = datos, family = binomial)
+
+modelo_upl_up2 <- glm(UPL_UP ~ P5_1 + EDAD + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
+                      data = datos, family = binomial)
+
+modelo_upl_psoe2 <- glm(UPL_PSOE ~ P5_1 + EDAD + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
+                      data = datos, family = binomial)
+
+# Resultados
+summary(modelo_up2)
+summary(modelo_upl2)
+summary(modelo_psoe2)
+summary(modelo_upl_up2)
+summary(modelo_upl_psoe2)
 
 # Guardamos las regresiones
 
