@@ -1,5 +1,5 @@
 ---
-title: "Regresiones"
+title: "Regresiones en Word"
 output: word_document
 date: "2024-05-16"
 ---
