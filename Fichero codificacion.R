@@ -131,9 +131,9 @@ datos$FIDELID <- factor(datos$FIDELID, levels = c(1, 2, 3, 4, 5, 6, 8, 9),
 datos$CLASESUB <- factor(datos$CLASESUB, levels = c(1, 2, 3, 4, 5, 6, 8, 9),
                          labels = c("Clase alta y media alta", "Clase media-media", "Clase media-baja", "Clase trabajadora/obrera/proletariado",
                                     "Clase baja/pobre", "Otras", "N.S.", "N.C."))
-
-
-
+datos$CLASESUB <- as.character(datos$CLASESUB)
+datos$CLASESUB[datos$CLASESUB == "Clase trabajadora/obrera/proletariado" | datos$CLASESUB == "Clase baja/pobre"] <- "Clase baja"
+datos$CLASESUB <- factor(datos$CLASESUB, levels = c("Clase alta y media alta", "Clase media-media", "Clase media-baja", "Clase baja", "Otras", "N.S.", "N.C."))
 
 
 
@@ -150,6 +150,8 @@ datos$CLASESUB <- as.factor(datos$CLASESUB)
 # EDAD y ESCIDEOL a numéricas
 datos$EDAD <- as.numeric(as.character(datos$EDAD))
 datos$ESCIDEOL <- as.numeric(as.character(datos$ESCIDEOL))
+
+
 
 # Crear variables binarias para Unidas Podemos, UPL y PSOE
 datos$Voto_UP <- ifelse(datos$RECUVOTOA == "Unidas Podemos", 1, 0)
