@@ -192,6 +192,11 @@ summary(modelo_upl_up)
 summary(modelo_upl_psoe)
 
 #Regresiones limpias
+datos$P5_1 <- relevel(datos$P5_1, ref = "(NO LEER) Otros medios") #Calcular el logit sobre "Otros medios"
+datos$CLASESUB <- relevel(datos$CLASESUB, ref = "Clase media-media") #Calcular el logit sobre clase media-media
+
+
+
 modelo_upl2 <- glm(Voto_UPL ~ P5_1 + EDAD + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
                      data = datos, family = binomial)
 
