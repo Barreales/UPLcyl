@@ -219,6 +219,7 @@ summary(modelo_psoe2)
 summary(modelo_upl_up2)
 summary(modelo_upl_psoe2)
 
+
 # Guardamos las regresiones
 
 # Unidas Podemos
@@ -239,6 +240,19 @@ coeficientesPSOE$Variable <- rownames(coeficientesPSOE)
 rownames(coeficientesPSOE) <- NULL
 write_xlsx(coeficientesPSOE, "Data/regresion_PSOE.xlsx")
 
+##Realización de árboles de clasificación
+arbol_PSOE <- tree(datos$Voto_PSOE ~ P5_1 + EDAD + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
+                   data = data, 
+                   mincut = 2,       # Reducir el mínimo de observaciones en una rama
+                   minsize = 10,     # Reducir el mínimo de observaciones en un nodo terminal
+                   mindev = 0.01)    # Reducir la desviación mínima para dividir un nodo
 
+plot(arbol_PSOE)
+text(arbol_PSOE, pretty = 0)
+arbol_PSOE
 
-
+#Como se puede observar en la figura, el voto al PSOE se puede explicar a través de 5 nodos terminales.
+#El primero, aquellos que se ubican ideológicamente por debajo de 4.5 y son menores de 61.5 años, teniendo una proporción de voto de 0.55.
+#El segundo es similar al primero, pero con aquellos mayores de 61.5 años, que tienen una proporción de voto de 0.81.
+#Los tres siguientes nodos son aquellos que su escala ideológica es mayor a 4.5. Si, a su vez, es mayor a 5.5 la proporción de voto es de 0.05.
+#Aunque, si es inferior, los nodos terminales dependen de la fidelidad de voto. Si se sitúa entre 3 y 6 el voto es de 0.17, en el caso contrario pasa a ser de 0.44.
