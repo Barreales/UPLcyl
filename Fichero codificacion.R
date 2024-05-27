@@ -12,7 +12,7 @@ library(caret)
 library(nnet)
 library(openxlsx)
 library(writexl)
-
+library(tree)
 
 # Fichero 
 data <- read.csv("Data/3352.csv", sep = ";", header = TRUE, fill = TRUE, check.names = TRUE)
@@ -242,7 +242,7 @@ write_xlsx(coeficientesPSOE, "Data/regresion_PSOE.xlsx")
 
 ##Realización de árboles de clasificación
 arbol_PSOE <- tree(datos$Voto_PSOE ~ P5_1 + EDAD + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
-                   data = data, 
+                   data = datos, 
                    mincut = 2,       # Reducir el mínimo de observaciones en una rama
                    minsize = 10,     # Reducir el mínimo de observaciones en un nodo terminal
                    mindev = 0.01)    # Reducir la desviación mínima para dividir un nodo
@@ -256,3 +256,43 @@ arbol_PSOE
 #El segundo es similar al primero, pero con aquellos mayores de 61.5 años, que tienen una proporción de voto de 0.81.
 #Los tres siguientes nodos son aquellos que su escala ideológica es mayor a 4.5. Si, a su vez, es mayor a 5.5 la proporción de voto es de 0.05.
 #Aunque, si es inferior, los nodos terminales dependen de la fidelidad de voto. Si se sitúa entre 3 y 6 el voto es de 0.17, en el caso contrario pasa a ser de 0.44.
+
+arbol_UPL <- tree(datos$Voto_UPL ~ P5_1 + EDAD + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
+                   data = datos, 
+                   mincut = 2,       # Reducir el mínimo de observaciones en una rama
+                   minsize = 10,     # Reducir el mínimo de observaciones en un nodo terminal
+                   mindev = 0.01)    # Reducir la desviación mínima para dividir un nodo
+
+plot(arbol_UPL)
+text(arbol_UPL, pretty = 0)
+arbol_UPL
+
+arbol_UP <- tree(datos$Voto_UP ~ P5_1 + EDAD + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
+                  data = datos, 
+                  mincut = 2,       # Reducir el mínimo de observaciones en una rama
+                  minsize = 10,     # Reducir el mínimo de observaciones en un nodo terminal
+                  mindev = 0.01)    # Reducir la desviación mínima para dividir un nodo
+
+plot(arbol_UP)
+text(arbol_UP, pretty = 0)
+arbol_UP
+
+arbol_UPL_UP <- tree(datos$UPL_UP ~ P5_1 + EDAD + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
+                        data = datos, 
+                        mincut = 2,       # Reducir el mínimo de observaciones en una rama
+                        minsize = 10,     # Reducir el mínimo de observaciones en un nodo terminal
+                        mindev = 0.01)    # Reducir la desviación mínima para dividir un nodo
+
+plot(arbol_UPL_UP)
+text(arbol_UPL_UP, pretty = 0)
+arbol_UPL_UP
+
+arbol_UPL_PSOE <- tree(datos$UPL_PSOE ~ P5_1 + EDAD + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
+                      data = datos, 
+                      mincut = 2,       # Reducir el mínimo de observaciones en una rama
+                      minsize = 10,     # Reducir el mínimo de observaciones en un nodo terminal
+                      mindev = 0.01)    # Reducir la desviación mínima para dividir un nodo
+
+plot(arbol_UPL_PSOE)
+text(arbol_UPL_PSOE, pretty = 0)
+arbol_UPL_PSOE
