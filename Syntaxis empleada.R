@@ -1,5 +1,5 @@
 ## Fichero trabajo final Data Science
-# Diego Mochales, David Barreales, Emilio Portela, Nayeli Paucart
+# Diego Mochales, David Barreales, Emilio Portela, Nayely Paucar
 
 # Librerias
 library(tidyverse)
