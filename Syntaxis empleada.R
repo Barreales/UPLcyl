@@ -360,7 +360,7 @@ ggplot(datos2, aes(x = ESCIDEOL, fill = Voto_Total)) +
        fill = "Partido político") +
   scale_fill_manual(values = colores_partidos) +
   theme_minimal()
-
+ 
 
 ##Realización de árboles de clasificación
 arbol_PSOE <- tree(datos$Voto_PSOE ~ P5_1 + EDAD + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
