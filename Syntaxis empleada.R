@@ -15,6 +15,10 @@ library(openxlsx)
 library(writexl)
 library(tree)
 library(GGally)
+library(sjPlot)
+library(webshot)
+library(htmltools)
+library(hrbrthemes)
 
 # Fichero 
 data <- read.csv("Data/3352.csv", sep = ";", header = TRUE, fill = TRUE, check.names = TRUE)
@@ -159,77 +163,50 @@ datos <- datos %>%
 
 datos$Voto_Total <- factor(datos$Voto_Total, levels = c("UP", "UPL", "PSOE")) #Convertirla en factor
 
-## Regresiones con todas las variables a examinar
+## Regresiones
 datos$P5_1 <- relevel(datos$P5_1, ref = "(NO LEER) No se informó, no le interesa la política") #Calcular el logit sobre "No se informó"
 datos$CLASESUB <- relevel(datos$CLASESUB, ref = "Clase media-media") #Calcular el logit sobre clase media-media
 datos$FIDELID <- relevel(datos$FIDELID, ref = "Por lo general suelen votar por el mismo partido") #Calcular el logit sobre "voto suele ser el mismo". Que se ha considerado el valor intermedio
 
-modelo_up <- glm(Voto_UP ~ P5_1 + EDAD + CNO11 + ESTUDIOS + ESTADOCIVIL + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
-                 data = datos, family = binomial)
+#Regresiones con todas las VD
+modelos_todo <- list(
+  glm(Voto_UP ~ P5_1 + EDAD + CNO11 + ESTUDIOS + ESTADOCIVIL + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, data = datos, family = binomial),
+  glm(Voto_UPL ~ P5_1 + EDAD + CNO11 + ESTUDIOS + ESTADOCIVIL + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, data = datos, family = binomial),
+  glm(Voto_PSOE ~ P5_1 + EDAD + CNO11 + ESTUDIOS + ESTADOCIVIL + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, data = datos, family = binomial),
+  glm(UPL_UP ~ P5_1 + EDAD + CNO11 + ESTUDIOS + ESTADOCIVIL + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, data = datos, family = binomial),
+  glm(UPL_PSOE ~ P5_1 + EDAD + CNO11 + ESTUDIOS + ESTADOCIVIL + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, data = datos, family = binomial))
 
-modelo_upl <- glm(Voto_UPL ~ P5_1 + EDAD + CNO11 + ESTUDIOS + ESTADOCIVIL + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
-                  data = datos, family = binomial)
-
-modelo_psoe <- glm(Voto_PSOE ~ P5_1 + EDAD + CNO11 + ESTUDIOS + ESTADOCIVIL + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
-                   data = datos, family = binomial)
-
-
-modelo_upl_up <- glm(UPL_UP ~ P5_1 + EDAD + CNO11 + ESTUDIOS + ESTADOCIVIL + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
-                     data = datos, family = binomial)
-
-modelo_upl_psoe <- glm(UPL_PSOE ~ P5_1 + EDAD + CNO11 + ESTUDIOS + ESTADOCIVIL + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
-                       data = datos, family = binomial)
-
-summary(modelo_up)
-summary(modelo_upl)
-summary(modelo_psoe)
-summary(modelo_upl_up)
-summary(modelo_upl_psoe)
+tab_model(modelos_todo, 
+          title = "Regresión con todas las VD", 
+          dv.labels = c("UP","UPL", "PSOE","UPL-UP", "UPL-PSOE"),
+          show.ci = FALSE)
 
 #Regresiones significativas teóricas
-modelo_upl_t <- glm(Voto_UPL ~  ESCIDEOL + FIDELID + CLASESUB, 
-                    data = datos, family = binomial)
+modelos_t <- list(
+  glm(Voto_UP ~ ESCIDEOL + FIDELID + CLASESUB, data = datos, family = binomial),
+  glm(Voto_UPL ~ ESCIDEOL + FIDELID + CLASESUB, data = datos, family = binomial),
+  glm(Voto_PSOE ~ ESCIDEOL + FIDELID + CLASESUB, data = datos, family = binomial),
+  glm(UPL_UP ~ ESCIDEOL + FIDELID + CLASESUB, data = datos, family = binomial),
+  glm(UPL_PSOE ~ ESCIDEOL + FIDELID + CLASESUB, data = datos, family = binomial))
 
-modelo_up_t <- glm(Voto_UP ~  ESCIDEOL + FIDELID + CLASESUB, 
-                   data = datos, family = binomial)
+tab_model(modelos_t, 
+          title = "Regresión de las VD teóricas significativas", 
+          dv.labels = c("UP","UPL", "PSOE","UPL-UP", "UPL-PSOE"),
+          show.ci = FALSE)
 
-modelo_psoe_t <- glm(Voto_PSOE ~  ESCIDEOL + FIDELID + CLASESUB, 
-                     data = datos, family = binomial)
-
-modelo_upl_up_t <- glm(UPL_UP ~  ESCIDEOL + FIDELID + CLASESUB, 
-                       data = datos, family = binomial)
-
-modelo_upl_psoe_t <- glm(UPL_PSOE ~  ESCIDEOL + FIDELID + CLASESUB, 
-                         data = datos, family = binomial)
-
-summary(modelo_up_t)
-summary(modelo_upl_t)
-summary(modelo_psoe_t)
-summary(modelo_upl_up_t)
-summary(modelo_upl_psoe_t)
 
 #Regresiones con varaibles significativas teóricas + sociodemográficas 
+modelos_ts <- list(
+  glm(Voto_UP ~ ESCIDEOL + FIDELID + CLASESUB + EDAD + SEXO + TAMUNI, data = datos, family = binomial),
+  glm(Voto_UPL ~ ESCIDEOL + FIDELID + CLASESUB + EDAD + SEXO + TAMUNI, data = datos, family = binomial),
+  glm(Voto_PSOE ~ ESCIDEOL + FIDELID + CLASESUB + EDAD + SEXO + TAMUNI, data = datos, family = binomial),
+  glm(UPL_UP ~ ESCIDEOL + FIDELID + CLASESUB + EDAD + SEXO + TAMUNI, data = datos, family = binomial),
+  glm(UPL_PSOE ~ ESCIDEOL + FIDELID + CLASESUB + EDAD + SEXO + TAMUNI, data = datos, family = binomial))
 
-modelo_upl2 <- glm(Voto_UPL ~ ESCIDEOL + FIDELID + CLASESUB + EDAD + SEXO + TAMUNI, 
-                   data = datos, family = binomial)
-
-modelo_up2 <- glm(Voto_UP ~ ESCIDEOL + FIDELID + CLASESUB + EDAD + SEXO + TAMUNI, 
-                  data = datos, family = binomial)
-
-modelo_psoe2 <- glm(Voto_PSOE ~ ESCIDEOL + FIDELID + CLASESUB + EDAD + SEXO + TAMUNI, 
-                    data = datos, family = binomial)
-
-modelo_upl_up2 <- glm(UPL_UP ~ ESCIDEOL + FIDELID + CLASESUB + EDAD + SEXO + TAMUNI, 
-                      data = datos, family = binomial)
-
-modelo_upl_psoe2 <- glm(UPL_PSOE ~ ESCIDEOL + FIDELID + CLASESUB + EDAD + SEXO + TAMUNI, 
-                        data = datos, family = binomial)
-
-summary(modelo_up2)
-summary(modelo_upl2)
-summary(modelo_psoe2)
-summary(modelo_upl_up2)
-summary(modelo_upl_psoe2)
+tab_model(modelos_ts, 
+          title = "Regresión de las VD teóricas + sociodemográficas significativas", 
+          dv.labels = c("UP","UPL", "PSOE","UPL-UP", "UPL-PSOE"),
+          show.ci = FALSE)
 
 ##Tablas de contingencia
 
@@ -251,13 +228,10 @@ print(ideol_total_res)
 sexo_total <- table(datos$Voto_Total, datos$SEXO) %>% print()  #Crear una tabla de contingencia
 sexo_total_col <- prop.table(sexo_total, margin = 2) * 100 #Asignar porcentajes por columna o VI
 print(sexo_total_col) 
-
 sexo_total_chi<-chisq.test(sexo_total) #Realizar a la tabla un Chi-cuadrado
 print(sexo_total_chi)
-
 sexo_total_v <- sqrt(sexo_total_chi$statistic / (sum(sexo_total) * (min(dim(sexo_total)) - 1))) #Realizar a la tabla una V de Cramer
 print(sexo_total_v)
-
 sexo_total_res <- sexo_total_chi$stdres #Análisis de los residuos
 print(sexo_total_res) 
 
@@ -265,7 +239,6 @@ print(sexo_total_res)
 datos$FIDELID <- as.character(datos$FIDELID)
 datos$FIDELID <- factor(datos$FIDELID, levels = c("Votan siempre por el mismo partido", "Por lo general suelen votar por el mismo partido",
                                                   "Según lo que más les convenza en ese momento, votan por un partido u otro o no votan")) #Eliminar categorias sin valores significativos
-
 fidelid_total <- table(datos$Voto_Total, datos$FIDELID) %>% print()  #Crear una tabla de contingencia
 fidelid_total_col <- prop.table(fidelid_total, margin = 2) * 100 #Asignar porcentajes por columna o VI
 print(fidelid_total_col) 
@@ -316,6 +289,78 @@ tamuni_total_v <- sqrt(tamuni_total_chi$statistic / (sum(tamuni_total) * (min(di
 print(tamuni_total_v)
 tamuni_total_res <- tamuni_total_chi$stdres #Análisis de los residuos
 print(tamuni_total_res)
+
+##Gráficos con aquellas VD cuya V de Cramer > 0.1
+#Preparación de los datos
+datos2 <- datos %>%
+  filter(!is.na(Voto_Total) & !is.na(CLASESUB) & !is.na(FIDELID))
+
+# Definir los colores personalizados para cada partido
+colores_partidos <- c("PSOE" = "red",
+                      "UPL" = "yellow",
+                      "UP" = "purple")
+
+# CLASESUB
+porcentaje <- datos2 %>%
+  group_by(Voto_Total, CLASESUB) %>%
+  summarize(count = n(), .groups = 'drop') %>%
+  group_by(Voto_Total) %>%
+  mutate(total_count = sum(count),
+         percentage = (count / total_count) * 100) %>%
+  ungroup()
+
+ggplot(porcentaje, aes(x = Voto_Total, y = percentage, fill = CLASESUB)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = sprintf("%.1f%%", percentage)), 
+            position = position_stack(vjust = 0.5), size = 3) +
+  labs(title = "Distribución porcentual del voto dentro de cada partido político",
+       x = "Partido político",
+       y = "Porcentaje",
+       fill = "Clase Subjetiva") +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  theme_minimal()
+
+
+# FIDELID
+porcentaje <- datos2 %>%
+  group_by(Voto_Total, FIDELID) %>%
+  summarize(count = n(), .groups = 'drop') %>%
+  group_by(Voto_Total) %>%
+  mutate(total_count = sum(count),
+         percentage = (count / total_count) * 100) %>%
+  ungroup()
+
+ggplot(porcentaje, aes(x = Voto_Total, y = percentage, fill = FIDELID)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = sprintf("%.1f%%", percentage)), 
+            position = position_stack(vjust = 0.5), size = 3) +
+  labs(title = "Distribución porcentual de la fidelidad dentro de cada partido político",
+       x = "Partido político",
+       y = "Porcentaje",
+       fill = "Fidelidad del voto") +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  theme_minimal()
+
+# EDADR
+ggplot(datos2, aes(x = EDAD, fill = Voto_Total)) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Distribución de la edad por partido político",
+       x = "Edad",
+       y = "Densidad",
+       fill = "Partido político") +
+  scale_fill_manual(values = colores_partidos) +
+  theme_minimal()
+
+# ESCIDEOL
+ggplot(datos2, aes(x = ESCIDEOL, fill = Voto_Total)) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Distribución de la ideología por partido político",
+       x = "Ideología",
+       y = "Densidad",
+       fill = "Partido político") +
+  scale_fill_manual(values = colores_partidos) +
+  theme_minimal()
+
 
 ##Realización de árboles de clasificación
 arbol_PSOE <- tree(datos$Voto_PSOE ~ P5_1 + EDAD + SEXO + ESCIDEOL + TAMUNI + FIDELID + CLASESUB, 
